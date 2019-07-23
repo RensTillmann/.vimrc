@@ -5,13 +5,21 @@ set runtimepath^=~/.vim/bundle/ack.vim
 " Loaded plugins through VimPlug
 call plug#begin('~/.vim/plugged')
 Plug 'morhetz/gruvbox'
+Plug 'jamessan/vim-gnupg'
 call plug#end()
 
 " Settings/Configuration
-set nocp                " 'compatible' is not set
+set nocp               	" 'compatible' is not set
 set nocompatible wildmenu
-:syntax enable          " enable syntax
-:filetype plugin on         " enable plugins (for netrw)
+:syntax enable			" enable syntax
+:filetype plugin on     	" enable plugins (for netrw)
+
+" Make sure we set clipboard according to our OS
+if system('uname -s') == "Darwin\n"
+  set clipboard=unnamed "OSX
+else
+  set clipboard=unnamedplus "Linux
+endif
 
 set path+=**
 set wildmenu
@@ -21,23 +29,23 @@ set wildignore=.git
 "set wildignore=*.foo,*bar
 set tags=./tags,tags;$HOME
 
-set number          " display a line number in front of every line
+set number 			" display a line number in front of every line
 set tabstop=4
 set shiftwidth=4
 set expandtab
 
-set scrolloff=20        " keeps a few lines of context around the cursor top/bottom
-set hlsearch            " enable search highlighting
-:nohlsearch         " temporarily disable highlighting for current search (this will not disable it for 
-set incsearch           " display the search match while still typing
-set autowrite           " automatically save any changes made to the buffer before it is hidden 
-set autoread            " autmoatically update content in vim if file was changes elsewhere
+set scrolloff=20 		" keeps a few lines of context around the cursor top/bottom
+set hlsearch			" enable search highlighting
+:nohlsearch			" temporarily disable highlighting for current search (this will not disable it for next searches)
+set incsearch			" display the search match while still typing
+set autowrite			" automatically save any changes made to the buffer before it is hidden 
+set autoread			" autmoatically update content in vim if file was changes elsewhere
 
 " Theme settings
 set t_Co=256
 syntax on
 set termguicolors
-colorscheme gruvbox 
+colorscheme gruvbox
 set background=dark
 let g:gruvbox_contrast = 'soft'
 let g:gruvbox_termcolors = '256'
