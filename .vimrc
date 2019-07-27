@@ -15,6 +15,7 @@ filetype plugin on
 " Loaded plugins
 set runtimepath^=~/.vim/bundle/ctrlp.vim
 set runtimepath^=~/.vim/bundle/ack.vim
+set runtimepath^=~/.vim/bundle/taboo.vim
 
 " Settings/Configuration
 
@@ -37,6 +38,8 @@ set wildignore=.git
 set tags=./tags,tags;$HOME
 " display a line number in front of every line
 set number
+" set relative line numbers
+set relativenumber
 " always display current filename in status bar
 set laststatus=2
 " highlight current line
@@ -57,8 +60,8 @@ set showcmd
 set ai
 set si
 
-set scrolloff=20 	
-set sidescrolloff=30
+set scrolloff=20       " keep 20 lines visible above and below cursor at all times                                                                        
+set sidescrolloff=30   " keep 30 columns visible left and right of the cursor at all times
 " keeps a few lines of context around the cursor top/bottom
 set hlsearch		
 " enable search highlighting
@@ -137,3 +140,6 @@ nnoremap <leader>v :vert sfind *
 " CTRL-B
 :nmap <C-B> :ls<CR>:silent :vert sb<Space>
 ":nmap <C-B> :ls<CR>:silent :b<Space>
+
+" Yank word > Replace word
+:map <C-j> cw<C-r>0<Esc>
