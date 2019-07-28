@@ -16,6 +16,8 @@ filetype plugin on
 set runtimepath^=~/.vim/bundle/ctrlp.vim
 set runtimepath^=~/.vim/bundle/ack.vim
 set runtimepath^=~/.vim/bundle/taboo.vim
+set runtimepath^=~/.vim/bundle/vim-surround
+set runtimepath^=~/.vim/bundle/vim-repeat " Required to repeat surroundings
 
 " Settings/Configuration
 
@@ -63,9 +65,8 @@ set si
 set scrolloff=20       " keep 20 lines visible above and below cursor at all times                                                                        
 set sidescrolloff=30   " keep 30 columns visible left and right of the cursor at all times
 " keeps a few lines of context around the cursor top/bottom
-set hlsearch		
-" enable search highlighting
-:nohlsearch		
+set hlsearch
+" disable search highlighting
 " temporarily disable highlighting for current search (this will not disable it for next searches)
 set incsearch		
 " display the search match while still typing
@@ -88,21 +89,21 @@ set si
 syntax enable			
 set nowrap
 " enable syntax
-"colorscheme monokai
+"colorscheme molokai
 "colorscheme ayu
 "colorscheme monokai2
 set t_Co=256
 set termguicolors
 colorscheme gruvbox
 set background=dark
-let g:gruvbox_contrast_dark = 'medium'
+let g:gruvbox_hls_cursor = 'red'
+"let g:gruvbox_contrast_dark = 'medium'
 "let g:gruvbox_contrast_light = 'soft'
 "let g:gruvbox_bold = '1'
 "let g:gruvbox_italic = '1'
 "let g:gruvbox_underline = '1'
 "let g:gruvbox_undercurl = '1'
 "let g:gruvbox_termcolors = '256'
-"let g:gruvbox_hls_cursor = 'orange'
 "let g:gruvbox_number_column = 'none'
 "let g:gruvbox_sign_column = 'bg1'
 "let g:gruvbox_color_column = 'bg0'
@@ -143,3 +144,10 @@ nnoremap <leader>v :vert sfind *
 
 " Yank word > Replace word
 :map <C-j> cw<C-r>0<Esc>
+
+" Change :q to :close so we do not exidenlty close vim completely on last
+" window
+cabbrev q <c-r>=(getcmdtype()==':' && getcmdpos()==1 ? 'close' : 'q')<CR>
+
+" Disable highlight search
+nnoremap <Esc><Esc> :nohls<CR>
