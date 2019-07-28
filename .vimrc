@@ -15,7 +15,6 @@ filetype plugin on
 " Loaded plugins
 set runtimepath^=~/.vim/bundle/ctrlp.vim
 set runtimepath^=~/.vim/bundle/ack.vim
-set runtimepath^=~/.vim/bundle/taboo.vim
 set runtimepath^=~/.vim/bundle/vim-surround
 set runtimepath^=~/.vim/bundle/vim-repeat " Required to repeat surroundings
 
