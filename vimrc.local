@@ -1,0 +1,94 @@
+set nocompatible		
+filetype off			
+filetype plugin on    		
+"filetype plugin indent on
+if system('uname -s') == "Darwin\n"
+  set clipboard=unnamed 
+  "OSX
+else
+  set clipboard=unnamedplus 
+  "Linux
+endif
+set path+=**
+set wildmenu
+set nocompatible wildmenu
+set wildmode=full
+set wildignorecase
+set wildignore=.git
+"set wildignore=*.foo,*bar
+set tags=./tags,tags;$HOME
+" display a line number in front of every line
+set number
+" set relative line numbers
+set relativenumber
+" always display current filename in status bar
+set laststatus=2
+" highlight current line
+set cursorline
+" show existing TAB with 4 spaces width
+set tabstop=4		
+" when indenting with `>`, use 4 spaces width
+set shiftwidth=4	
+" on pressing TAB, insert 4 spaces
+set expandtab		
+" keep 1000 entries of entered commands
+set history=1000    
+" Show the line and column number of the cursor position
+set ruler           
+" Show (partial) command in the last line of the screen
+set showcmd         
+set scrolloff=20       " keep 20 lines visible above and below cursor at all times                                                                        
+" keeps a few lines of context around the cursor top/bottom
+set sidescrolloff=30   " keep 30 columns visible left and right of the cursor at all times
+" disable search highlighting
+" temporarily disable highlighting for current search (this will not disable it for next searches)
+set hlsearch
+" display the search match while still typing
+set incsearch		
+" return both uppercase and lowercase search results
+set ignorecase          
+" when case was used inside search do not skip ignorecase setting
+set smartcase           
+" automatically save any changes made to the buffer before it is hidden 
+set autowrite		
+" autmoatically update content in vim if file was changes elsewhere
+set autoread		
+" break words
+set lbr                 
+" enable autoindenting
+set ai                  
+" enable smart indentation
+set si                  
+" enable syntax
+syntax enable			
+set nowrap
+" Theme settings
+set t_Co=256
+set termguicolors
+colorscheme gruvbox
+set background=dark
+let g:gruvbox_hls_cursor = 'red'
+" Vmail starred messages color
+" Custom key mapping
+"let mapleader = ","
+" regex completion instead of whole word completion
+nnoremap <leader>f :find *
+nnoremap <leader>s :sfind *
+nnoremap <leader>v :vert sfind *
+" map CTRL-B to open buffer list and automatically enter :b[waiting for number input] to easily switch 
+" to a different buffer
+" CTRL-B
+:nmap <C-B> :ls<CR>:silent :vert sb<Space>
+":nmap <C-B> :ls<CR>:silent :b<Space>
+:map <C-j> cw<C-r>0<Esc>
+" Disable highlight search
+nnoremap <Esc><Esc> :nohls<CR>
+" Smart Autocompletion
+function! CleverTab()
+   if strpart( getline('.'), 0, col('.')-1 ) =~ '^\s*$'
+      return "\<Tab>"
+   else
+      return "\<C-N>"
+   endif
+endfunction
+inoremap <Tab> <C-R>=CleverTab()<CR>
