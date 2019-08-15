@@ -25,6 +25,7 @@
 set nocompatible
 " enable syntax and plugins (for netrw)
 syntax enable
+"autocmd BufEnter * :syntax sync fromstart
 filetype plugin on
 " Make sure we set clipboard according to our OS
 if system('uname -s') == "Darwin\n"
@@ -53,9 +54,9 @@ set ignorecase
 " when case was used inside search do not skip ignorecase setting
 set smartcase
 " automatically save any changes made to the buffer before it is hidden
-"set autowrite
+set autowrite
 " autmoatically update content in vim if file was changes elsewhere
-"set autoread
+set autoread
 " keep 20 lines visible above and below cursor at all times
 set scrolloff=50
 " keep 30 columns visible left and right of the cursor at all times
@@ -63,11 +64,14 @@ set sidescrolloff=50
 " filetype plugin indent on
 " show existing TAB with 4 spaces width
 set tabstop=4		
-set shiftwidth=4	
 " when indenting with `>`, use 4 spaces width
-set expandtab		
+set shiftwidth=4	
 " on pressing TAB, insert 4 spaces
-
+set expandtab		
+" do not wrap words
+set nowrap
+" yank workd > replace word
+map <C-j> cw<C-r>0<Esc>
 
 " LEADER MAPPINGS:
 
@@ -148,6 +152,17 @@ command! MakeTags !ctags -R .
 
 " The good stuff is documented in |ins-completion|
 
+function! InsertTabWrapper()
+    let col = col('.') - 1
+    if !col || getline('.')[col - 1] !~ '\k'
+        return "\<tab>"
+    else
+        return "\<c-p>"
+    endif
+endfunction
+inoremap <expr> <tab> InsertTabWrapper()
+inoremap <s-tab> <c-n>
+
 " HIGHLIGHTS:
 " - ^x^n for JUST this file
 " - ^x^f for filenames (works with our path trick!)
@@ -194,7 +209,7 @@ let g:netrw_banner=0
 " preview window shown in a vertically split window
 " let g:netrw_preview=4
 " let g:netrw_winsize=30
-" let g:netrw_altv=1          " open splits to the right
+let g:netrw_altv=1          " open splits to the right
 " let g:netrw_list_hide=netrw_gitignore#Hide()
 " let g:netrw_list_hide.=',\(^\|\s\s\)\zs\.\S\+'
 " let g:netrw_browse_split=4  " open in prior window
@@ -287,7 +302,11 @@ function NTL_Toggle()
             " get the buffer of the window, then determine if it is a netrw
             " filetype, if so switch to this window
             let buf_info = getbufinfo(i)
-            let buf_syntax = buf_info[0]['variables']['current_syntax']
+            " first check if variable "current_syntax" exists
+            let buf_syntax = -1
+            if has_key(buf_info[0]['variables'], 'current_syntax')
+                let buf_syntax = buf_info[0]['variables']['current_syntax']
+            endif
             if(buf_syntax=='netrwlist')
                 " check if the buffer is hidden
                 if(buf_info[0]['hidden']==1)
@@ -519,4 +538,5 @@ function! s:ChangeToRootDirectory()
 endfunction
 
 call <SID>ChangeToRootDirectory()
+
 
