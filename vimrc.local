@@ -70,6 +70,8 @@ set shiftwidth=4
 set expandtab		
 " do not wrap words
 set nowrap
+" more powerful backspacing
+set backspace=indent,eol,start
 " yank workd > replace word
 map <C-j> cw<C-r>0<Esc>
 
