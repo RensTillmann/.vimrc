@@ -53,8 +53,11 @@ set incsearch
 set ignorecase
 " when case was used inside search do not skip ignorecase setting
 set smartcase
+" allow going to 
+" When on a buffer becomes hidden when it is |abandon|ed.  If the buffer is still displayed in another window, it does not become hidden, of course.
+set hidden
 " automatically save any changes made to the buffer before it is hidden
-set autowrite
+set autowriteall
 " autmoatically update content in vim if file was changes elsewhere
 set autoread
 " keep 20 lines visible above and below cursor at all times
@@ -246,132 +249,132 @@ let g:netrw_altv=1          " open splits to the right
 
 " CUSTOM VIM SCRIPTS AND FRUNCTIONS:
 
-" NERDTREE LIGHT:
-" Make Netrw function like NerdTree (I would call this NerdTree Light)
-" In the below example we use ",c" to open and close Netrw explorer.
-" ",c" is a synonym to "S" which basically deletes a line and puts you in
-" insert mode. So if you are used to ",c" either start using "S" or use a
-" different key, or use a leader + key of your choosing e.g: "<leader>e".
-" Check out the following URL for unused keys which can be savely mapped:
-" https://vim.fandom.com/wiki/Unused_keys
-" When your leader key is set to "," (comma) you could use ",e" to open up the
-" Define where to put the explorere window
-" Possible options are: "left", "right", "top", "bottom"
-
-" Where to position the explorer window?
-let g:NTL_Position = "left"
-" Set a width for the left/right positions
-let g:NTL_Width = 30
-" Set a width for the top/bottom positions
-let g:NTL_Height = 15
-
-" Optionally set key binding "timeouts", look at ":help timeout" for more info
-" set timeout timeoutlen=150 ttimeoutlen=100
-" Mapping ",c" to the function which opens the Netrw explorer
-" and toggles between the buffers (windows)
-nnoremap ,c :call NTL_Toggle()<CR>
-" Remember the last known location in Netrw, so that we can open the according
-" buffer after re-opening the explorer.
-let g:NTL_LastKnownBuffer = -1 
-" When leaving a buffer make sure to remember it
-autocmd BufLeave * call s:NTL_ExecuteLeave()
-function s:NTL_ExecuteLeave()
-    if(NTL_GetBufferFileType()=='netrw')
-        " Save last known buffer, so we can return to this
-        " location/directory when going back
-        let g:NTL_LastKnownBuffer = bufnr("%")
-    endif
-endfunction
-" Get the current buffer file type, used to determine if the buffer belongs to
-" Netrw
-function NTL_GetBufferFileType()
-    return getbufvar(bufnr("%"), "&filetype")
-endfunction
-" Function that will try to switch from a normal buffer to an existing Netrw
-" buffer, or if no Netrw buffer exists, opens up a new one.
-" Look at ":help netrw" for more info on the possible settings
-function NTL_Toggle()
-	if(NTL_GetBufferFileType()!='netrw')
-        " We are currently in a normal window and trying to switch to the
-        " explorer window. Let's first try to find out which window is
-        " currently displaying the explorer. Once we have found it we can
-        " switch to this window based on the window number.
-        let w_all = reverse(range(1, bufnr('$')))
-        let w_found = -1
-        " loop over all windows, and check if their buffer has syntax of
-        " 'netrwlist', if so this is our explorer and we will switch to it
-        for i in w_all
-            " get the buffer of the window, then determine if it is a netrw
-            " filetype, if so switch to this window
-            let buf_info = getbufinfo(i)
-            " first check if variable "current_syntax" exists
-            let buf_syntax = -1
-            if has_key(buf_info[0]['variables'], 'current_syntax')
-                let buf_syntax = buf_info[0]['variables']['current_syntax']
-            endif
-            if(buf_syntax=='netrwlist')
-                " check if the buffer is hidden
-                if(buf_info[0]['hidden']==1)
-                    " let's open up the existing buffer
-                    let position = g:NTL_Position
-                    " Left
-                    if(position=="left")
-                        silent execute ":vertical sb".i 
-                        silent execute ":vertical resize ".(g:NTL_Width)
-                    endif
-                    " Right
-                    if(position=="right")
-                        silent execute ":vertical belowright sb".i 
-                        silent execute ":vertical resize ".(g:NTL_Width)
-                    endif
-                    " Top
-                    if(position=="top")
-                        silent execute ":topleft sb".i 
-                        silent execute ":resize ".(g:NTL_Height)
-                    endif
-                    " Bottom
-                    if(position=="bottom")
-                        silent execute ":botright sb".i 
-                        silent execute ":resize ".(g:NTL_Height)
-                    endif
-                    return
-                else
-                    " this is the explorer window, we found it so let's break the
-                    " loop and switch to this window
-                    silent execute "normal! ".winbufnr(i)."\<C-w>\<C-w>"
-                    let w_found = 1
-                endif
-                break
-            endif
-        endfor
-        " Check if no window with the explorer was found, then open up a new
-        " one at the position defined in "g:NTL_Position"
-        if(w_found==-1)
-            " lets open a new netrw window one
-            call NTL_OpenNewWindow() 
-        endif
-	else
-		" we are already inside a netrw window
-		" switch to next window
-		silent execute "normal! \<C-w>\<C-w>"
-	endif
-endfunction
-function NTL_OpenNewWindow()
-    let position = g:NTL_Position
-    if(position=="left")
-        silent execute ":Lexplore"
-        silent execute ":vertical resize ".(g:NTL_Width)
-    elseif(position=="right")
-        silent execute ":Lexplore!"
-        silent execute ":vertical resize ".(g:NTL_Width)
-    elseif(position=="top")
-        silent execute ":Hexplore!"
-        silent execute ":resize ".(g:NTL_Height)
-    else
-        silent execute ":Hexplore"
-        silent execute ":resize ".(g:NTL_Height)
-    endif
-endfunction
+" " NERDTREE LIGHT:
+" " Make Netrw function like NerdTree (I would call this NerdTree Light)
+" " In the below example we use ",c" to open and close Netrw explorer.
+" " ",c" is a synonym to "S" which basically deletes a line and puts you in
+" " insert mode. So if you are used to ",c" either start using "S" or use a
+" " different key, or use a leader + key of your choosing e.g: "<leader>e".
+" " Check out the following URL for unused keys which can be savely mapped:
+" " https://vim.fandom.com/wiki/Unused_keys
+" " When your leader key is set to "," (comma) you could use ",e" to open up the
+" " Define where to put the explorere window
+" " Possible options are: "left", "right", "top", "bottom"
+" 
+" " Where to position the explorer window?
+" let g:NTL_Position = "left"
+" " Set a width for the left/right positions
+" let g:NTL_Width = 30
+" " Set a width for the top/bottom positions
+" let g:NTL_Height = 15
+" 
+" " Optionally set key binding "timeouts", look at ":help timeout" for more info
+" " set timeout timeoutlen=150 ttimeoutlen=100
+" " Mapping ",c" to the function which opens the Netrw explorer
+" " and toggles between the buffers (windows)
+" nnoremap ,c :call NTL_Toggle()<CR>
+" " Remember the last known location in Netrw, so that we can open the according
+" " buffer after re-opening the explorer.
+" let g:NTL_LastKnownBuffer = -1 
+" " When leaving a buffer make sure to remember it
+" autocmd BufLeave * call s:NTL_ExecuteLeave()
+" function s:NTL_ExecuteLeave()
+"     if(NTL_GetBufferFileType()=='netrw')
+"         " Save last known buffer, so we can return to this
+"         " location/directory when going back
+"         let g:NTL_LastKnownBuffer = bufnr("%")
+"     endif
+" endfunction
+" " Get the current buffer file type, used to determine if the buffer belongs to
+" " Netrw
+" function NTL_GetBufferFileType()
+"     return getbufvar(bufnr("%"), "&filetype")
+" endfunction
+" " Function that will try to switch from a normal buffer to an existing Netrw
+" " buffer, or if no Netrw buffer exists, opens up a new one.
+" " Look at ":help netrw" for more info on the possible settings
+" function NTL_Toggle()
+" 	if(NTL_GetBufferFileType()!='netrw')
+"         " We are currently in a normal window and trying to switch to the
+"         " explorer window. Let's first try to find out which window is
+"         " currently displaying the explorer. Once we have found it we can
+"         " switch to this window based on the window number.
+"         let w_all = reverse(range(1, bufnr('$')))
+"         let w_found = -1
+"         " loop over all windows, and check if their buffer has syntax of
+"         " 'netrwlist', if so this is our explorer and we will switch to it
+"         for i in w_all
+"             " get the buffer of the window, then determine if it is a netrw
+"             " filetype, if so switch to this window
+"             let buf_info = getbufinfo(i)
+"             " first check if variable "current_syntax" exists
+"             let buf_syntax = -1
+"             if has_key(buf_info[0]['variables'], 'current_syntax')
+"                 let buf_syntax = buf_info[0]['variables']['current_syntax']
+"             endif
+"             if(buf_syntax=='netrwlist')
+"                 " check if the buffer is hidden
+"                 if(buf_info[0]['hidden']==1)
+"                     " let's open up the existing buffer
+"                     let position = g:NTL_Position
+"                     " Left
+"                     if(position=="left")
+"                         silent execute ":vertical sb".i 
+"                         silent execute ":vertical resize ".(g:NTL_Width)
+"                     endif
+"                     " Right
+"                     if(position=="right")
+"                         silent execute ":vertical belowright sb".i 
+"                         silent execute ":vertical resize ".(g:NTL_Width)
+"                     endif
+"                     " Top
+"                     if(position=="top")
+"                         silent execute ":topleft sb".i 
+"                         silent execute ":resize ".(g:NTL_Height)
+"                     endif
+"                     " Bottom
+"                     if(position=="bottom")
+"                         silent execute ":botright sb".i 
+"                         silent execute ":resize ".(g:NTL_Height)
+"                     endif
+"                     return
+"                 else
+"                     " this is the explorer window, we found it so let's break the
+"                     " loop and switch to this window
+"                     silent execute "normal! ".winbufnr(i)."\<C-w>\<C-w>"
+"                     let w_found = 1
+"                 endif
+"                 break
+"             endif
+"         endfor
+"         " Check if no window with the explorer was found, then open up a new
+"         " one at the position defined in "g:NTL_Position"
+"         if(w_found==-1)
+"             " lets open a new netrw window one
+"             call NTL_OpenNewWindow() 
+"         endif
+" 	else
+" 		" we are already inside a netrw window
+" 		" switch to next window
+" 		silent execute "normal! \<C-w>\<C-w>"
+" 	endif
+" endfunction
+" function NTL_OpenNewWindow()
+"     let position = g:NTL_Position
+"     if(position=="left")
+"         silent execute ":Lexplore"
+"         silent execute ":vertical resize ".(g:NTL_Width)
+"     elseif(position=="right")
+"         silent execute ":Lexplore!"
+"         silent execute ":vertical resize ".(g:NTL_Width)
+"     elseif(position=="top")
+"         silent execute ":Hexplore!"
+"         silent execute ":resize ".(g:NTL_Height)
+"     else
+"         silent execute ":Hexplore"
+"         silent execute ":resize ".(g:NTL_Height)
+"     endif
+" endfunction
 
 
 
